@@ -1,0 +1,23 @@
+# Java
+backend/target/
+*.class
+*.jar
+
+# Python
+ai-service/.venv/
+ai-service/__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.idea/
+.vscode/settings.json
+*.DS_Store
+
+# Docker
+.docker/
