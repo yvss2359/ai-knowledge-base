@@ -1,0 +1,53 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: akb_postgres
+    environment:
+      POSTGRES_DB: akb_db
+      POSTGRES_USER: akb_user
+      POSTGRES_PASSWORD: akb_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U akb_user -d akb_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: akb_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: akb_qdrant
+    ports:
+      - "6333:6333"   # REST API
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  # Interface web pour PostgreSQL (optionnel mais pratique)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: akb_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@akb.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
